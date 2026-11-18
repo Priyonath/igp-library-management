@@ -1,0 +1,4 @@
+# Netlify _redirects for ITAHAR GOVERNMENT POLYTECHNIC Library Portal
+# API calls are made directly from the browser to the backend URL (window.API_BASE).
+# Only the SPA fallback is needed here.
+/*  /index.html  200

@@ -1,0 +1,51 @@
+# =============================================================================
+# netlify.toml  –  ITAHAR GOVERNMENT POLYTECHNIC | Library Portal
+# Frontend-only Netlify deployment.
+# The Node.js backend is hosted separately (Railway / Render / VPS).
+# =============================================================================
+
+[build]
+  # No framework build step needed — the frontend is plain HTML/JS/CSS.
+  # The only build action is generating public/config.js from an env var.
+  command   = "node scripts/build_frontend.js"
+  publish   = "public"
+
+[build.environment]
+  # Node version for the build runner
+  NODE_VERSION = "20"
+
+# -----------------------------------------------------------------------------
+# Headers — security hardening for all pages
+# -----------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options          = "SAMEORIGIN"
+    X-Content-Type-Options   = "nosniff"
+    Referrer-Policy          = "strict-origin-when-cross-origin"
+    Permissions-Policy       = "camera=(), microphone=(), geolocation=()"
+
+# Cache static JS/CSS aggressively (they are fingerprinted by filename in prod)
+[[headers]]
+  for = "/app.js"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=3600"
+
+[[headers]]
+  for = "/config.js"
+  [headers.values]
+    Cache-Control = "no-store"
+
+# -----------------------------------------------------------------------------
+# Redirects
+# NOTE: Do NOT proxy /api/* here.  API calls go directly from the browser
+#       to your backend URL (stored in window.API_BASE / VITE_API_BASE).
+#       A Netlify proxy to an external backend only works with Netlify Pro and
+#       causes CORS double-hop issues on the free tier.
+# -----------------------------------------------------------------------------
+
+# SPA fallback — every unknown path serves index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
