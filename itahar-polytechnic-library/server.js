@@ -50,9 +50,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // In production the frontend is on Netlify — do NOT serve static files from here.
 // In local dev we still serve from /public for convenience.
-if (process.env.NODE_ENV !== 'production') {
-  app.use(express.static(path.join(__dirname, 'public')));
-}
+app.use(express.static(path.join(__dirname, 'public')));
 
 // API Health Check
 app.get('/api/health', (req, res) => {
